@@ -79,14 +79,14 @@ export default class ViroSample extends Component {
             onPress={this._getExperienceButtonOnPress(AR_NAVIGATOR_TYPE)}
             underlayColor={'#68a0ff'} >
 
-            <Text style={localStyles.buttonText}>Machine</Text>
+            <Text style={localStyles.buttonText}>Emoji</Text>
           </TouchableHighlight>
 
           <TouchableHighlight style={localStyles.buttons}
             onPress={this._getExperienceButtonOnPress(AR_NAVIGATOR_TYPE1)}
             underlayColor={'#68a0ff'} >
 
-            <Text style={localStyles.buttonText}>Emoji</Text>
+            <Text style={localStyles.buttonText}>Machine</Text>
           </TouchableHighlight>
         </View>
       </View>

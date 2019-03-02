@@ -18,7 +18,46 @@ import {
   ViroAnimations,
 } from 'react-viro';
 
+var Machine = [
+  {
+      location:require('./res/CNC/CNC.obj'),
+      res:require('./res/CNC/CNC.mtl'),
+      points: [0,0,0],
+      machineID: 'm-1',
+  },
+  {
+    location:require('./res/CNC/CNC.obj'),
+    res:require('./res/CNC/CNC.mtl'),
+    points: [1,0,0],
+    machineID: 'm-2',
+  },
+  {
+    location:require('./res/CNC/CNC.obj'),
+    res:require('./res/CNC/CNC.mtl'),
+    points: [2,0,-1],
+    machineID: 'm-3',
+  },
+  {
+  location:require('./res/CNC/CNC.obj'),
+  res:require('./res/CNC/CNC.mtl'),
+  points: [0,0,-1],
+  machineID: 'm-4',
+  },
+  {
+  location:require('./res/CNC/CNC.obj'),
+  res:require('./res/CNC/CNC.mtl'),
+  points: [3,0,-2],
+  machineID: 'm-5',
+  },
+]
+
 export default class HelloWorldScene extends Component {
+
+  totalLength=20;
+  totalWidth=20;
+  LayoutLength=5;
+  LayoutWidth=5;
+  st="";
 
   constructor() {
     super();
@@ -30,25 +69,48 @@ export default class HelloWorldScene extends Component {
 
     // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
+    this._onClick = this._onClick.bind(this);
   }
 
   render() {
+
+    this.scale = Math.min(
+      (this.LayoutLength / this.totalLength),
+      (this.LayoutWidth / this.totalWidth)
+    );
+
     return (
       <ViroARScene onTrackingUpdated={this._onInitialized} >
         <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
         <ViroAmbientLight color={"#aaaaaa"} />
         <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
           position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
-        <ViroNode position={[0,-1,0]} dragType="FixedToWorld" onDrag={()=>{}} >
-          <Viro3DObject
-            source={require('./res/emoji_smile/emoji_smile.vrx')}
-            resources={[require('./res/emoji_smile/emoji_smile_diffuse.png'),
-                require('./res/emoji_smile/emoji_smile_normal.png'),
-                require('./res/emoji_smile/emoji_smile_specular.png')]}
-            position={[-.5, .5, -1]}
-            scale={[.2, .2, .2]}
-            type="VRX" />
-        </ViroNode>
+        <ViroARPlaneSelector width={this.LayoutWidth} height={this.LayoutLength}>
+        {
+          Machine.map((machine) =>
+            <Viro3DObject
+              source={machine.location}
+              resorces={machine.res}
+              key={machine.machineID}
+              position={machine.points.map(x => x * this.scale)}
+              scale={[.0001, .0001, .0001].map(x => x * this.scale)}
+              highAccuracyEvents={true}
+              type="OBJ"
+              onClick={this._onClick(machine.machineID)}/>
+          )
+        }
+        {
+          Machine.map((machine)=>
+          machine.machineID==this.st?
+              <ViroText 
+              text={machine.machineID}
+              key={machine.machineID}
+              scale={[.5, .5, .5].map(x => x * this.scale)} 
+              position={machine.points.map(x => (x-0.2) * this.scale)}
+              style={styles.helloWorldTextStyle}/>:null
+          )
+        }
+        </ViroARPlaneSelector>
       </ViroARScene>
     );
   }
@@ -56,11 +118,16 @@ export default class HelloWorldScene extends Component {
   _onInitialized(state, reason) {
     if (state == ViroConstants.TRACKING_NORMAL) {
       this.setState({
-        text : "Hello World!"
+        text : "MachDatum"
       });
     } else if (state == ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
     }
+  }
+
+  _onClick(id){
+    this.st=id;
+    //console.log("Clicked!!");
   }
 }
 
