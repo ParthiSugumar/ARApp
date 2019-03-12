@@ -57,19 +57,18 @@ export default class HelloWorldScene extends Component {
   totalWidth=20;
   LayoutLength=5;
   LayoutWidth=5;
-  st="";
 
   constructor() {
     super();
 
     // Set initial state here
     this.state = {
-      text : "Initializing AR..."
+      text : "Initializing AR...",
+      selectedId: ""
     };
 
     // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
-    this._onClick = this._onClick.bind(this);
   }
 
   render() {
@@ -96,17 +95,17 @@ export default class HelloWorldScene extends Component {
               scale={[.0001, .0001, .0001].map(x => x * this.scale)}
               highAccuracyEvents={true}
               type="OBJ"
-              onClick={this._onClick(machine.machineID)}/>
+              onClick={() => this.setState({ selectedId : machine.machineID })}/>
           )
         }
         {
           Machine.map((machine)=>
-          machine.machineID==this.st?
+          machine.machineID==this.state.selectedId?
               <ViroText 
               text={machine.machineID}
               key={machine.machineID}
               scale={[.5, .5, .5].map(x => x * this.scale)} 
-              position={machine.points.map(x => (x-0.2) * this.scale)}
+              position={machine.points.map(x => (x-0.1) * this.scale)}
               style={styles.helloWorldTextStyle}/>:null
           )
         }
@@ -123,11 +122,6 @@ export default class HelloWorldScene extends Component {
     } else if (state == ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
     }
-  }
-
-  _onClick(id){
-    this.st=id;
-    //console.log("Clicked!!");
   }
 }
 
